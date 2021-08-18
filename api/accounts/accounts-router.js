@@ -16,24 +16,20 @@ router.get('/', async (req, res, next) => {
   }
 })
 
-router.get('/:id', checkAccountId, async (req, res, next) => {
-  try{
+router.get('/:id', checkAccountId, async (req, res) => {
     res.json(req.account)
-  }catch(err){
-    next(err)
-  }
 })
 
 router.post('/', checkAccountPayload, checkAccountNameUnique, async (req, res, next) => {
   try{
-    const account = await Accounts.create(req.body);
+    const account = await Accounts.create({ name: req.body.name.trim(), budget: req.body.budget });
     res.status(201).json(account)
   }catch(err){
     next(err)
   }
 })
 
-router.put('/:id', checkAccountId, async (req, res, next) => {
+router.put('/:id', checkAccountId, checkAccountPayload, async (req, res, next) => {
   try{
     const newDetails = await Accounts.updateById(req.params.id, req.body);
     res.json(newDetails);
@@ -44,8 +40,8 @@ router.put('/:id', checkAccountId, async (req, res, next) => {
 
 router.delete('/:id', checkAccountId, async (req, res, next) => {
   try{
-    const deletedAccount = await Accounts.deleteById(req.params.id);
-    res.json(deletedAccount);
+    await Accounts.deleteById(req.params.id);
+    res.json(req.account);
   }catch(err){
     next(err)
   }

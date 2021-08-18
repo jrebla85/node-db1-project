@@ -13,15 +13,17 @@ const create = async ({ name, budget }) => {
   return getById(id);
 }
 
-const updateById = async (id, { name, budget}) => {
-  await db("accounts").where("id", id).update({ name, budget });
+const updateById = async (id, account) => {
+  await db("accounts").where("id", id).update(account);
   return getById(id);
 }
 
 const deleteById = async id => {
-  const deletedAccount = await getById(id);
-  await db("accounts").where("id", id).delete();
-  return deletedAccount;
+  return db("accounts").where("id", id).delete();
+  
+  // const deletedAccount = await getById(id);
+  // await db("accounts").where("id", id).delete();
+  // return deletedAccount;
 }
 
 const checkAccountName = async (name) => {
